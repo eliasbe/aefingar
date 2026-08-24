@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Rehab Gym Sheet</title>
+<title>Whole-Body A/B</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Hanken+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0d0f0e;
-    --panel:#161a18;
-    --panel-2:#1d231f;
-    --line:#2a312c;
-    --ink:#eef2ec;
-    --muted:#8d978d;
-    --dim:#5f6960;
-    --accent:#c5ff3d;      /* lower body — the core focus */
-    --accent-soft:#9bc62f;
-    --warm:#ff8a3d;        /* mandatory pec stretch */
-    --upper:#6fc3ff;       /* upper body */
-    --done:#3a4a36;
+    --bg:#0e0f11;
+    --panel:#16181c;
+    --panel-2:#1c1f24;
+    --line:#2a2e35;
+    --ink:#eef0f2;
+    --muted:#8f97a1;
+    --dim:#5d646d;
+    --accent:#ffb340;       /* main lifts / primary */
+    --accent-soft:#d99a3a;
+    --blue:#6fc3ff;         /* superset / accessory */
+    --violet:#b18cff;       /* day Z / free elements */
+    --warn:#ff8a5c;         /* injury swap hints */
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html,body{background:var(--bg);}
@@ -28,10 +28,10 @@
     font-family:"Hanken Grotesque",sans-serif;
     color:var(--ink);
     line-height:1.45;
-    padding:14px 12px 60px;
+    padding:14px 12px calc(96px + env(safe-area-inset-bottom));
     max-width:560px;margin:0 auto;
     background:
-      radial-gradient(120% 60% at 100% -5%, rgba(197,255,61,.06), transparent 60%),
+      radial-gradient(120% 60% at 100% -5%, rgba(255,179,64,.05), transparent 60%),
       var(--bg);
   }
 
@@ -46,7 +46,7 @@
     font-size:26px;letter-spacing:.01em;line-height:1.05;margin-top:2px;
   }
   .toggle{
-    display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:14px;
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:14px;
     background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:5px;
   }
   .toggle button{
@@ -55,46 +55,40 @@
     padding:11px 4px;border-radius:10px;cursor:pointer;transition:.18s;
   }
   .toggle button .sub{display:block;font-family:"Hanken Grotesque";font-weight:600;
-    font-size:10px;letter-spacing:.04em;text-transform:none;color:var(--dim);margin-top:1px;}
-  .toggle button.active{background:var(--accent);color:#101309;}
-  .toggle button.active .sub{color:#2c3a10;}
+    font-size:10px;letter-spacing:.02em;text-transform:none;color:var(--dim);margin-top:1px;}
+  .toggle button.active{background:var(--accent);color:#1a1204;}
+  .toggle button.active .sub{color:#4a3510;}
+  .toggle button#btnZ.active{background:var(--violet);color:#1b1030;}
+  .toggle button#btnZ.active .sub{color:#3c2a63;}
 
   /* ---- day panels ---- */
   .day{display:none;}
   .day.show{display:block;animation:fade .25s ease;}
   @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
 
-  .block-label{
-    display:flex;align-items:center;gap:8px;margin:18px 2px 8px;
-    font-family:"Oswald",sans-serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;
-    font-weight:500;color:var(--muted);
-  }
-  .block-label .tag{
-    font-size:10px;font-family:"Hanken Grotesque";font-weight:700;letter-spacing:.04em;
-    padding:2px 7px;border-radius:6px;text-transform:none;
-  }
-  .tag.core{background:rgba(197,255,61,.14);color:var(--accent);}
-  .tag.cut{background:rgba(111,195,255,.12);color:var(--upper);}
-  .block-label .ln{flex:1;height:1px;background:var(--line);}
-
-  /* ---- superset cards ---- */
+  /* ---- slot cards ---- */
   .ss{
     background:var(--panel);border:1px solid var(--line);border-radius:14px;
     padding:12px 13px;margin-bottom:9px;position:relative;overflow:hidden;
   }
-  .ss.lower{border-left:3px solid var(--accent);}
-  .ss.upper{border-left:3px solid var(--upper);}
-  .ss.optional{border-style:dashed;opacity:.92;}
-  .ss-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;}
+  .ss.main{border-left:3px solid var(--accent);}
+  .ss.acc{border-left:3px solid var(--blue);}
+  .ss-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:9px;}
   .ss-name{font-family:"Oswald",sans-serif;font-weight:500;font-size:13px;letter-spacing:.05em;
     text-transform:uppercase;color:var(--ink);}
-  .ss-name .opt{color:var(--upper);font-size:10px;letter-spacing:.08em;}
-  .sets{display:flex;gap:5px;}
+  .ss-name .tag{
+    font-size:10px;font-family:"Hanken Grotesque";font-weight:700;letter-spacing:.04em;
+    padding:2px 7px;border-radius:6px;text-transform:none;vertical-align:1px;margin-left:6px;white-space:nowrap;
+  }
+  .tag.keep{background:rgba(255,179,64,.14);color:var(--accent);}
+  .tag.cut1{background:rgba(177,140,255,.13);color:var(--violet);}
+  .tag.cut2{background:rgba(111,195,255,.12);color:var(--blue);}
+  .sets{display:flex;gap:5px;flex:none;}
   .dot{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line);
     background:var(--panel-2);cursor:pointer;display:flex;align-items:center;justify-content:center;
     font-size:11px;font-weight:700;color:var(--dim);transition:.15s;}
-  .dot.on{background:var(--accent);border-color:var(--accent);color:#101309;}
-  .ss.upper .dot.on{background:var(--upper);border-color:var(--upper);color:#06243a;}
+  .ss.main .dot.on{background:var(--accent);border-color:var(--accent);color:#1a1204;}
+  .ss.acc .dot.on{background:var(--blue);border-color:var(--blue);color:#06243a;}
 
   .ex{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:6px 0;}
   .ex+.ex{border-top:1px dotted var(--line);}
@@ -102,54 +96,115 @@
   .ex-name .note{display:block;font-size:11.5px;font-weight:500;color:var(--muted);margin-top:1px;}
   .reps{font-family:"Oswald",sans-serif;font-weight:500;font-size:15px;letter-spacing:.02em;
     color:var(--accent);white-space:nowrap;padding-top:1px;}
-  .ss.upper .reps{color:var(--upper);}
+  .ss.acc .reps{color:var(--blue);}
   .pair{font-size:10px;letter-spacing:.18em;color:var(--dim);text-align:center;
     font-weight:700;margin:3px 0;}
+  .rest{font-size:11px;color:var(--dim);font-weight:600;margin-top:7px;letter-spacing:.03em;}
 
-  /* ---- simple rows (warmup / mandatory / cardio) ---- */
+  /* ---- exercise choices ---- */
+  details.choices{margin-top:2px;}
+  details.choices summary{
+    list-style:none;cursor:pointer;font-size:11.5px;font-weight:700;color:var(--dim);
+    letter-spacing:.05em;padding:3px 0;user-select:none;
+  }
+  details.choices summary::-webkit-details-marker{display:none;}
+  details.choices summary::after{content:" ▾";}
+  details.choices[open] summary::after{content:" ▴";}
+  details.choices .list{font-size:13px;color:var(--muted);padding:2px 0 3px;line-height:1.55;}
+  details.choices .swap{
+    font-size:12px;color:var(--warn);margin-top:5px;padding-left:9px;
+    border-left:2px solid rgba(255,138,92,.5);line-height:1.5;
+  }
+
+  /* ---- simple rows (warmup / finisher / Z items) ---- */
   .row{display:flex;gap:11px;align-items:flex-start;background:var(--panel);
     border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-bottom:9px;}
+  .row.opt{border-style:dashed;opacity:.92;}
   .row .ic{width:30px;height:30px;flex:none;border-radius:9px;display:flex;align-items:center;
     justify-content:center;font-family:"Oswald";font-weight:600;font-size:14px;}
   .row .body{flex:1;}
   .row .t{font-weight:700;font-size:14px;letter-spacing:.02em;}
+  .row .t .tag{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;border-radius:6px;
+    margin-left:6px;vertical-align:1px;white-space:nowrap;}
   .row .d{font-size:13px;color:var(--muted);margin-top:1px;}
-  .row.warm .ic{background:rgba(197,255,61,.12);color:var(--accent);}
-  .row.cardio .ic{background:rgba(141,151,141,.14);color:var(--muted);}
-  .row.must{border-color:rgba(255,138,61,.4);background:linear-gradient(90deg,rgba(255,138,61,.08),var(--panel) 60%);}
-  .row.must .ic{background:rgba(255,138,61,.16);color:var(--warm);}
-  .row.must .t .badge{font-size:9.5px;letter-spacing:.12em;color:var(--warm);font-weight:800;
-    border:1px solid rgba(255,138,61,.5);padding:1px 6px;border-radius:5px;margin-left:6px;
-    text-transform:uppercase;vertical-align:1px;}
+  .row.warm .ic{background:rgba(255,179,64,.12);color:var(--accent);}
+  .row.fin .ic{background:rgba(177,140,255,.13);color:var(--violet);}
+  .row.z .ic{background:rgba(177,140,255,.13);color:var(--violet);}
 
-  .midline{display:flex;align-items:center;gap:9px;margin:13px 2px 11px;}
-  .midline .ln{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5;}
-  .midline span{font-family:"Oswald";font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--accent-soft);font-weight:500;}
+  /* ---- footer / info sections ---- */
+  details.info{
+    background:var(--panel);border:1px solid var(--line);border-radius:13px;
+    padding:11px 13px;margin-bottom:9px;
+  }
+  details.info summary{
+    list-style:none;cursor:pointer;font-family:"Oswald",sans-serif;font-size:13px;
+    letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--muted);user-select:none;
+  }
+  details.info summary::-webkit-details-marker{display:none;}
+  details.info summary::after{content:" ▾";color:var(--dim);}
+  details.info[open] summary::after{content:" ▴";color:var(--dim);}
+  details.info ul{margin:9px 0 2px 17px;font-size:13px;color:var(--muted);line-height:1.6;}
+  details.info li{margin-bottom:7px;}
+  details.info li b{color:var(--ink);}
+  details.info li:last-child{margin-bottom:0;}
 
-  footer{margin-top:20px;padding:13px;border:1px dashed var(--line);border-radius:13px;
+  footer{margin-top:16px;padding:13px;border:1px dashed var(--line);border-radius:13px;
     font-size:12px;color:var(--muted);line-height:1.6;}
   footer b{color:var(--ink);font-weight:700;}
   footer .reset{margin-top:10px;width:100%;background:var(--panel-2);border:1px solid var(--line);
     color:var(--muted);font-family:"Oswald";letter-spacing:.1em;text-transform:uppercase;font-size:12px;
     padding:9px;border-radius:9px;cursor:pointer;}
-  .legend{display:flex;gap:14px;flex-wrap:wrap;margin:2px 2px 0;font-size:11px;color:var(--dim);}
-  .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:0;}
+
+  .zhead{
+    display:flex;align-items:center;gap:8px;margin:18px 2px 8px;
+    font-family:"Oswald",sans-serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:500;color:var(--violet);
+  }
+  .zhead .ln{flex:1;height:1px;background:var(--line);}
+  .zintro{font-size:13px;color:var(--muted);margin:4px 2px 14px;line-height:1.55;}
+
+  /* ---- timer bar ---- */
+  #timer{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(22,24,28,.96);backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);
+    padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+  }
+  #timer .inner{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:10px;}
+  #tDisplay{
+    font-family:"Oswald",sans-serif;font-weight:600;font-size:28px;letter-spacing:.02em;
+    font-variant-numeric:tabular-nums;color:var(--accent);min-width:86px;cursor:pointer;
+    line-height:1;user-select:none;
+  }
+  #tDisplay.over{color:var(--muted);}
+  #tDisplay .lbl{display:block;font-family:"Hanken Grotesque";font-size:9px;font-weight:700;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:2px;}
+  #timer .btns{display:flex;gap:5px;flex:1;flex-wrap:wrap;justify-content:flex-end;}
+  #timer button{
+    font-family:"Oswald",sans-serif;font-weight:500;font-size:13px;letter-spacing:.04em;
+    background:var(--panel-2);border:1px solid var(--line);color:var(--muted);
+    padding:7px 10px;border-radius:9px;cursor:pointer;transition:.15s;min-width:44px;
+  }
+  #timer button.preset.armed{background:var(--accent);border-color:var(--accent);color:#1a1204;}
+  #timer button.ctl{color:var(--ink);}
+  #timer button#tMode{color:var(--violet);border-color:rgba(177,140,255,.35);}
+  #timer button#tMode.sw{background:rgba(177,140,255,.15);}
+  #timer.flash{animation:tflash .5s ease 4;}
+  @keyframes tflash{
+    0%,100%{background:rgba(22,24,28,.96);}
+    50%{background:rgba(255,179,64,.28);}
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="kicker">Fibular Rehab · 2 wks NWB left</div>
-  <h1>Lower-Body Maintenance + Strength</h1>
+  <div class="kicker">2× guaranteed · 3× when possible</div>
+  <h1>Whole-Body A/B</h1>
   <div class="toggle">
-    <button id="btnA" class="active" onclick="show('A')">Day A<span class="sub">Knee-dominant</span></button>
-    <button id="btnB" onclick="show('B')">Day B<span class="sub">Hip-dominant</span></button>
-  </div>
-  <div class="legend">
-    <span><i style="background:var(--accent)"></i>Lower — core focus</span>
-    <span><i style="background:var(--upper)"></i>Upper — cut first if short</span>
-    <span><i style="background:var(--warm)"></i>Mandatory</span>
+    <button id="btnA" class="active" onclick="show('A')">Day A<span class="sub">Squat + Horizontal</span></button>
+    <button id="btnB" onclick="show('B')">Day B<span class="sub">Hinge + Vertical</span></button>
+    <button id="btnZ" onclick="show('Z')">Day Z<span class="sub">Free day</span></button>
   </div>
 </header>
 
@@ -159,62 +214,57 @@
   <div class="row warm">
     <div class="ic">W</div>
     <div class="body">
-      <div class="t">Warm-up · ~4 min</div>
-      <div class="d">Assault bike easy 3 min · bodyweight good-leg squats + glute squeezes</div>
+      <div class="t">Warm-up · ~8 min</div>
+      <div class="d">Erg easy 3–4 min → dynamic prep → 2–3 ramp-up sets of the main lift</div>
     </div>
   </div>
 
-  <div class="block-label"><span>Lower Body</span><span class="tag core">do this first</span><span class="ln"></span></div>
-
-  <div class="ss lower">
-    <div class="ss-head"><span class="ss-name">SS1 · Seated</span>
-      <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">Single-leg press <span class="note">good leg · stay seated in machine</span></div><div class="reps">8–12</div></div>
-    <div class="pair">— same machine —</div>
-    <div class="ex"><div class="ex-name">Single-leg calf press <span class="note">good leg</span></div><div class="reps">12–15</div></div>
+  <div class="ss main">
+    <div class="ss-head"><span class="ss-name">Slot 1 · Main lift<span class="tag keep">never skip</span></span>
+      <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span><span class="dot">4</span></div></div>
+    <div class="ex"><div class="ex-name">Knee-dominant, heavy <span class="note">straight sets · rest 2–3 min</span></div><div class="reps">4 × 4–6</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Back squat · front squat · heavy goblet squat · barbell/DB Bulgarian split squat</div>
+      <div class="swap">Knee history: box squat, step-up or hip-dominant variant swap in freely. Fibula: pain-free ankle range only — box squat, elevated heels or trap bar work well.</div>
+    </details>
   </div>
 
-  <div class="ss lower">
-    <div class="ss-head"><span class="ss-name">SS2 · Seated</span>
+  <div class="ss acc">
+    <div class="ss-head"><span class="ss-name">Slots 2+3 · Superset</span>
       <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">Leg extension</div><div class="reps">10–12</div></div>
-    <div class="pair">— stay seated / adjacent —</div>
-    <div class="ex"><div class="ex-name">Leg curl</div><div class="reps">10–12</div></div>
-  </div>
-
-  <div class="midline"><span class="ln"></span><span>Lower body done</span><span class="ln"></span></div>
-
-  <div class="block-label"><span>Upper Body</span><span class="tag cut">cut if short</span><span class="ln"></span></div>
-
-  <div class="ss upper">
-    <div class="ss-head"><span class="ss-name">SS3</span>
-      <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">Pull-ups <span class="note">or lat pulldown · assist as needed</span></div><div class="reps">6–10</div></div>
+    <div class="ex"><div class="ex-name">Horizontal press</div><div class="reps">3 × 6–10</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Barbell bench · DB bench (flat/incline) · weighted dip · weighted push-up</div>
+    </details>
     <div class="pair">— superset —</div>
-    <div class="ex"><div class="ex-name">Seated shoulder press</div><div class="reps">8–10</div></div>
+    <div class="ex"><div class="ex-name">Horizontal pull</div><div class="reps">3 × 8–12</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Barbell row · single-arm DB row · chest-supported row · inverted row</div>
+      <div class="swap">Finger injury: straps or open-hand grip on all rows.</div>
+    </details>
+    <div class="rest">rest ~90 s per round</div>
   </div>
 
-  <div class="ss upper optional">
-    <div class="ss-head"><span class="ss-name">SS4 <span class="opt">· optional · posture</span></span>
-      <div class="sets"><span class="dot">1</span><span class="dot">2</span></div></div>
-    <div class="ex"><div class="ex-name">Chest-supported row</div><div class="reps">10–12</div></div>
+  <div class="ss acc">
+    <div class="ss-head"><span class="ss-name">Slots 4+5 · Superset<span class="tag cut2">cut second</span></span>
+      <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
+    <div class="ex"><div class="ex-name">Hip hinge, light</div><div class="reps">3 × 10–12</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Light RDL · back extension · KB swing · hip thrust / glute bridge</div>
+    </details>
     <div class="pair">— superset —</div>
-    <div class="ex"><div class="ex-name">Face pulls</div><div class="reps">15</div></div>
+    <div class="ex"><div class="ex-name">Shoulder or arm accessory</div><div class="reps">3 × 10–15</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Lateral raise · face pull · curl · overhead triceps extension</div>
+    </details>
+    <div class="rest">rest ~60 s per round</div>
   </div>
 
-  <div class="row must">
-    <div class="ic">↔</div>
+  <div class="row fin opt">
+    <div class="ic">F</div>
     <div class="body">
-      <div class="t">Doorway pec stretch <span class="badge">mandatory</span></div>
-      <div class="d">2 × 30–45 s · open the chest after all the pulling</div>
-    </div>
-  </div>
-
-  <div class="row cardio">
-    <div class="ic">C</div>
-    <div class="body">
-      <div class="t">Cardio finisher · optional</div>
-      <div class="d">Bike 5 × (20 s hard / 40 s easy)</div>
+      <div class="t">Finisher · optional <span class="tag cut1">cut first</span></div>
+      <div class="d">Bike/row/ski intervals, e.g. 6 × (20 s hard / 40 s easy) · or core circuit: plank, hanging leg raise, ab wheel</div>
     </div>
   </div>
 </section>
@@ -225,81 +275,163 @@
   <div class="row warm">
     <div class="ic">W</div>
     <div class="body">
-      <div class="t">Warm-up · ~4 min</div>
-      <div class="d">Assault bike easy 3 min · glute squeezes + good-leg priming</div>
+      <div class="t">Warm-up · ~8 min</div>
+      <div class="d">Erg easy 3–4 min → dynamic prep → 2–3 ramp-up sets of the main lift</div>
     </div>
   </div>
 
-  <div class="block-label"><span>Lower Body</span><span class="tag core">do this first</span><span class="ln"></span></div>
-
-  <div class="ss lower">
-    <div class="ss-head"><span class="ss-name">SS1 · Standing</span>
-      <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">KB deadlift <span class="note">good-leg loaded · per therapist's setup</span></div><div class="reps">8–10</div></div>
-    <div class="pair">— crutch stays on —</div>
-    <div class="ex"><div class="ex-name">Single-leg calf raise <span class="note">good leg</span></div><div class="reps">12–15</div></div>
+  <div class="ss main">
+    <div class="ss-head"><span class="ss-name">Slot 1 · Main lift<span class="tag keep">never skip</span></span>
+      <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span><span class="dot">4</span></div></div>
+    <div class="ex"><div class="ex-name">Hip hinge, heavy <span class="note">straight sets · rest 2–3 min</span></div><div class="reps">4 × 4–6</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Deadlift · trap bar deadlift · heavy RDL · single-leg KB deadlift (then 6–8/leg)</div>
+      <div class="swap">Finger injury: straps or hook grip. Fibula: pain-free ankle range — trap bar is a good default.</div>
+    </details>
   </div>
 
-  <div class="ss lower">
-    <div class="ss-head"><span class="ss-name">SS2 · Seated</span>
+  <div class="ss acc">
+    <div class="ss-head"><span class="ss-name">Slots 2+3 · Superset</span>
       <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">Hip abduction</div><div class="reps">12–15</div></div>
-    <div class="pair">— same machine, flip pads —</div>
-    <div class="ex"><div class="ex-name">Hip adduction</div><div class="reps">12–15</div></div>
-  </div>
-
-  <div class="midline"><span class="ln"></span><span>Lower body done</span><span class="ln"></span></div>
-
-  <div class="block-label"><span>Upper Body</span><span class="tag cut">cut if short</span><span class="ln"></span></div>
-
-  <div class="ss upper">
-    <div class="ss-head"><span class="ss-name">SS3</span>
-      <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">Single-arm dumbbell row</div><div class="reps">10–12</div></div>
+    <div class="ex"><div class="ex-name">Vertical press</div><div class="reps">3 × 6–10</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Overhead press · seated/standing DB press · landmine press · pike/handstand push-up</div>
+    </details>
     <div class="pair">— superset —</div>
-    <div class="ex"><div class="ex-name">Lat pulldown <span class="note">or pull-up</span></div><div class="reps">8–10</div></div>
+    <div class="ex"><div class="ex-name">Vertical pull</div><div class="reps">3 × 6–10</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Pull-up / chin-up (weighted or band-assisted) · strap-assisted variations</div>
+      <div class="swap">Finger injury: band assistance reduces grip demand — no crimp-like loading.</div>
+    </details>
+    <div class="rest">rest ~90 s per round</div>
   </div>
 
-  <div class="ss upper optional">
-    <div class="ss-head"><span class="ss-name">SS4 <span class="opt">· optional · posture</span></span>
-      <div class="sets"><span class="dot">1</span><span class="dot">2</span></div></div>
-    <div class="ex"><div class="ex-name">Rear-delt fly</div><div class="reps">15</div></div>
+  <div class="ss acc">
+    <div class="ss-head"><span class="ss-name">Slots 4+5 · Superset<span class="tag cut2">cut second</span></span>
+      <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
+    <div class="ex"><div class="ex-name">Knee-dominant, light</div><div class="reps">3 × 8–12/leg</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Walking lunge · reverse lunge · step-up · goblet squat · cyclist squat</div>
+      <div class="swap">Knee history: reverse lunges are usually kinder than forward; step-ups substitute freely.</div>
+    </details>
+    <div class="pair">— superset —</div>
+    <div class="ex"><div class="ex-name">Rear delt / arm / grip accessory</div><div class="reps">3 × 10–15</div></div>
+    <details class="choices"><summary>choices</summary>
+      <div class="list">Rear-delt fly · band pull-apart · hammer curl · farmer's carry (30–40 m)</div>
+      <div class="swap">Finger injury: straps on carries, or skip grip work entirely.</div>
+    </details>
+    <div class="rest">rest ~60 s per round</div>
   </div>
 
-  <div class="row must">
-    <div class="ic">↔</div>
+  <div class="row fin opt">
+    <div class="ic">F</div>
     <div class="body">
-      <div class="t">Doorway pec stretch <span class="badge">mandatory</span></div>
-      <div class="d">2 × 30–45 s · open the chest after all the pulling</div>
-    </div>
-  </div>
-
-  <div class="row cardio">
-    <div class="ic">C</div>
-    <div class="body">
-      <div class="t">Cardio finisher · optional</div>
-      <div class="d">Bike steady 8–10 min</div>
+      <div class="t">Finisher · optional <span class="tag cut1">cut first</span></div>
+      <div class="d">Steady erg 8–10 min · or 500 m row / 1 km bike race · or core circuit</div>
     </div>
   </div>
 </section>
 
+<!-- ============ DAY Z ============ -->
+<section class="day" id="dayZ">
+
+  <div class="zintro">No structure, no guilt. Show up and pick whatever serves you — Z never interrupts the A/B alternation.</div>
+
+  <div class="row z">
+    <div class="ic">C</div>
+    <div class="body">
+      <div class="t">Conditioning</div>
+      <div class="d">Erg intervals 4 × (4 min hard / 3 min easy) · 2 km row time trial · 30 min steady zone-2 · ski erg ladder</div>
+    </div>
+  </div>
+
+  <div class="row z">
+    <div class="ic">P</div>
+    <div class="body">
+      <div class="t">Pump / vanity day</div>
+      <div class="d">Arms + shoulders + calves, high reps, supersets, chase the pump</div>
+    </div>
+  </div>
+
+  <div class="row z">
+    <div class="ic">S</div>
+    <div class="body">
+      <div class="t">Play / skill</div>
+      <div class="d">Heavy singles on a favorite lift · pull-up or handstand practice · KB flows · loaded carries medley</div>
+    </div>
+  </div>
+
+  <div class="row z">
+    <div class="ic">R</div>
+    <div class="body">
+      <div class="t">Physio / prehab / mobility</div>
+      <div class="d">Your PT's list · ankle/calf rehab work · finger tendon rehab · hips + thoracic mobility · long stretch session</div>
+    </div>
+  </div>
+
+  <div class="row z">
+    <div class="ic">↺</div>
+    <div class="body">
+      <div class="t">Catch-up</div>
+      <div class="d">Repeat whichever of A/B you missed, or just do its Slot 1 heavy and go home</div>
+    </div>
+  </div>
+</section>
+
+<details class="info">
+  <summary>Injury swap notes</summary>
+  <ul>
+    <li><b>Fibula fracture (~4 months post):</b> no impact — bike/row/ski for all conditioning, no jumping or running intervals. Load squats and hinges only through pain-free ankle range (box squat, elevated heels, trap bar). Progressive calf raises are rehab, not a risk. Defer to the physio on anything ankle-near-the-floor.</li>
+    <li><b>Climbing finger:</b> protect from crimp-like loading — straps or open-hand/hook grip on deadlifts, rows, pull-ups and carries. Band-assisted pull-ups reduce grip demand. Skip anything loading the digit in isolation.</li>
+    <li><b>Knee history:</b> pick knee angles that are pain-free that day — box squats, step-ups and hip-dominant variants substitute freely. Reverse lunges over forward. Warm the knee up properly before Slot 1; never train through joint pain.</li>
+  </ul>
+</details>
+
+<details class="info">
+  <summary>Progression rules</summary>
+  <ul>
+    <li><b>Double progression:</b> stay at a weight until you hit the top of the rep range on all sets, then add 2.5–5 kg and rebuild from the bottom.</li>
+    <li><b>Effort:</b> leave 1–2 reps in the tank (RPE 7–8); the main lift may touch RPE 8–9 on the last set.</li>
+    <li><b>Swapping is a feature</b> — but keep one main-lift choice for 3–4 weeks so progression is measurable.</li>
+    <li><b>Never train through joint pain</b> — swap the slot to a pain-free variant instead.</li>
+    <li><b>Deload</b> every 6–8 weeks, or when everything feels heavy: one week at ~60 %.</li>
+  </ul>
+</details>
+
 <footer>
-  <b>Pacing</b> · rest 60–90 s between rounds. Lower block ~20 min · full session ~35–40.<br>
-  <b>If pressed for time</b> · lower body is already banked — drop SS4, then SS3.<br>
-  <b>Lead lift quality</b> · run SS1 as straight sets w/ full rest if you want max output on press / KB deadlift.<br>
-  <b>Always defer to your therapist</b> on the KB deadlift setup &amp; anything injured-side-near-the-floor. Tap the set boxes to track your session.
+  <b>Scheduling</b> · alternate A and B regardless of calendar gaps — whichever you did last, do the other next. 2×/wk: AB AB · 3×/wk: ABA BAB.<br>
+  <b>If pressed for time</b> · drop the finisher, then slots 4+5, then trim 2+3 to 2 sets. Slot 1 is never skipped.<br>
+  <b>Session</b> ~60 min. Tap the set boxes to track your rounds.
   <button class="reset" onclick="resetAll()">Reset set tracker</button>
 </footer>
 
+<!-- ============ TIMER ============ -->
+<div id="timer">
+  <div class="inner">
+    <div id="tDisplay" onclick="tToggle()" title="tap to pause/resume">0:00<span class="lbl" id="tLabel">rest timer</span></div>
+    <div class="btns">
+      <button class="preset" onclick="tPreset(60,this)">1:00</button>
+      <button class="preset" onclick="tPreset(90,this)">1:30</button>
+      <button class="preset" onclick="tPreset(120,this)">2:00</button>
+      <button class="preset" onclick="tPreset(180,this)">3:00</button>
+      <button id="tMode" onclick="tSwitchMode()">⏱</button>
+      <button class="ctl" onclick="tReset()">✕</button>
+    </div>
+  </div>
+</div>
+
 <script>
+  /* ---- day toggle ---- */
   function show(d){
-    document.getElementById('dayA').classList.toggle('show', d==='A');
-    document.getElementById('dayB').classList.toggle('show', d==='B');
-    document.getElementById('btnA').classList.toggle('active', d==='A');
-    document.getElementById('btnB').classList.toggle('active', d==='B');
+    ['A','B','Z'].forEach(k=>{
+      document.getElementById('day'+k).classList.toggle('show', k===d);
+      document.getElementById('btn'+k).classList.toggle('active', k===d);
+    });
     window.scrollTo({top:0,behavior:'smooth'});
   }
-  document.querySelectorAll('.dot').forEach((d,i)=>{
+
+  /* ---- set tracker ---- */
+  document.querySelectorAll('.dot').forEach(d=>{
     d.dataset.n=d.textContent;
     d.addEventListener('click',()=>{
       const on=d.classList.toggle('on');
@@ -309,6 +441,97 @@
   function resetAll(){
     document.querySelectorAll('.dot').forEach(d=>{d.classList.remove('on');d.textContent=d.dataset.n;});
   }
+
+  /* ---- timer ----
+     Timestamp-based: display ticks are cosmetic; time is always computed
+     from Date.now() so a throttled/background tab shows the right value
+     the moment you look back. Beep only fires while the page is visible. */
+  const tEl=document.getElementById('tDisplay'), tLbl=document.getElementById('tLabel'),
+        tBar=document.getElementById('timer'), tModeBtn=document.getElementById('tMode');
+  let tMode='countdown';      // 'countdown' | 'stopwatch'
+  let tDur=0;                 // countdown duration, s
+  let tStart=null;            // epoch ms when (re)started
+  let tAcc=0;                 // accumulated ms while paused
+  let tRunning=false, tFired=false, tInt=null, audioCtx=null;
+
+  function fmt(s){
+    const neg=s<0; s=Math.abs(Math.round(s));
+    const m=Math.floor(s/60), r=s%60;
+    return (neg?'+':'')+m+':'+String(r).padStart(2,'0');
+  }
+  function elapsed(){ return (tAcc+(tRunning?Date.now()-tStart:0))/1000; }
+
+  function tRender(){
+    if(tMode==='countdown'){
+      const rem=tDur-elapsed();
+      tEl.textContent=fmt(rem);
+      tEl.classList.toggle('over',rem<0);
+      if(rem<=0&&!tFired&&tDur>0){tFired=true;tDing();}
+    }else{
+      tEl.textContent=fmt(elapsed());
+      tEl.classList.remove('over');
+    }
+  }
+  function tTick(){ if(tRunning) tRender(); }
+
+  function tRun(){
+    tStart=Date.now(); tRunning=true;
+    if(!tInt) tInt=setInterval(tTick,250);
+    tRender();
+  }
+  function tPreset(sec,btn){
+    unlockAudio();
+    tMode='countdown'; tModeBtn.classList.remove('sw');
+    tDur=sec; tAcc=0; tFired=false;
+    tLbl.textContent='rest timer';
+    document.querySelectorAll('#timer .preset').forEach(b=>b.classList.toggle('armed',b===btn));
+    tRun();
+  }
+  function tToggle(){
+    unlockAudio();
+    if(tRunning){ tAcc+=Date.now()-tStart; tRunning=false; tLbl.textContent='paused'; tRender(); }
+    else if(tAcc>0||tDur>0||tMode==='stopwatch'){ tLbl.textContent=tMode==='stopwatch'?'stopwatch':'rest timer'; tRun(); }
+  }
+  function tSwitchMode(){
+    unlockAudio();
+    tMode=(tMode==='countdown')?'stopwatch':'countdown';
+    tModeBtn.classList.toggle('sw',tMode==='stopwatch');
+    tDur=0; tAcc=0; tFired=false; tRunning=false;
+    document.querySelectorAll('#timer .preset').forEach(b=>b.classList.remove('armed'));
+    tLbl.textContent=tMode==='stopwatch'?'stopwatch · tap time to start':'rest timer';
+    tEl.classList.remove('over');
+    tEl.textContent='0:00';
+  }
+  function tReset(){
+    tDur=0; tAcc=0; tFired=false; tRunning=false;
+    document.querySelectorAll('#timer .preset').forEach(b=>b.classList.remove('armed'));
+    tLbl.textContent=tMode==='stopwatch'?'stopwatch · tap time to start':'rest timer';
+    tEl.classList.remove('over');
+    tEl.textContent='0:00';
+  }
+
+  /* beep + flash — visible page only; AudioContext unlocked by first tap */
+  function unlockAudio(){
+    if(!audioCtx){
+      try{ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+    }
+    if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
+  }
+  function tDing(){
+    tBar.classList.remove('flash'); void tBar.offsetWidth; tBar.classList.add('flash');
+    if(!audioCtx||document.hidden) return;
+    [0,0.25].forEach(off=>{
+      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.type='sine'; o.frequency.value=880;
+      g.gain.setValueAtTime(0.001,audioCtx.currentTime+off);
+      g.gain.exponentialRampToValueAtTime(0.35,audioCtx.currentTime+off+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+off+0.2);
+      o.connect(g).connect(audioCtx.destination);
+      o.start(audioCtx.currentTime+off); o.stop(audioCtx.currentTime+off+0.22);
+    });
+  }
+  /* re-sync instantly when the tab becomes visible again */
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) tRender(); });
 </script>
 </body>
 </html>
