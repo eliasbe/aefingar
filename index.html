@@ -116,6 +116,32 @@
     border-left:2px solid rgba(255,138,92,.5);line-height:1.5;
   }
 
+  /* ---- weight log ---- */
+  .log{margin-top:6px;border-top:1px dotted var(--line);padding-top:6px;}
+  .log .hint{font-size:11.5px;font-weight:700;color:var(--dim);letter-spacing:.05em;
+    cursor:pointer;user-select:none;padding:2px 0;}
+  .log .hint b{font-weight:700;}
+  .ss.main .log .hint b{color:var(--accent-soft);}
+  .ss.acc .log .hint b{color:var(--blue);}
+  .log .editor{display:none;margin-top:6px;}
+  .log.open .editor{display:block;}
+  .log .entry{display:flex;gap:6px;}
+  .log .entry input{
+    flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--line);border-radius:9px;
+    color:var(--ink);font-family:"Hanken Grotesque",sans-serif;font-weight:600;font-size:16px;
+    padding:8px 11px;
+  }
+  .log .entry input::placeholder{color:var(--dim);font-weight:500;}
+  .log .entry input:focus{outline:none;border-color:var(--dim);}
+  .log .entry button{
+    font-family:"Oswald",sans-serif;font-weight:500;font-size:12px;letter-spacing:.08em;
+    text-transform:uppercase;border:0;padding:0 14px;border-radius:9px;cursor:pointer;
+  }
+  .ss.main .log .entry button{background:var(--accent);color:#1a1204;}
+  .ss.acc .log .entry button{background:var(--blue);color:#06243a;}
+  .log .hist{margin-top:7px;font-size:12px;color:var(--muted);line-height:1.65;}
+  .log .hist .d{color:var(--dim);font-weight:700;margin-right:7px;font-variant-numeric:tabular-nums;}
+
   /* ---- simple rows (warmup / finisher / Z items) ---- */
   .row{display:flex;gap:11px;align-items:flex-start;background:var(--panel);
     border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-bottom:9px;}
@@ -222,7 +248,7 @@
   <div class="ss main">
     <div class="ss-head"><span class="ss-name">Slot 1 · Main lift<span class="tag keep">never skip</span></span>
       <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span><span class="dot">4</span></div></div>
-    <div class="ex"><div class="ex-name">Knee-dominant, heavy <span class="note">straight sets · rest 2–3 min</span></div><div class="reps">4 × 4–6</div></div>
+    <div class="ex" data-log="a1"><div class="ex-name">Knee-dominant, heavy <span class="note">straight sets · rest 2–3 min</span></div><div class="reps">4 × 4–6</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Back squat · front squat · heavy goblet squat · barbell/DB Bulgarian split squat</div>
       <div class="swap">Knee history: box squat, step-up or hip-dominant variant swap in freely. Fibula: pain-free ankle range only — box squat, elevated heels or trap bar work well.</div>
@@ -232,12 +258,12 @@
   <div class="ss acc">
     <div class="ss-head"><span class="ss-name">Slots 2+3 · Superset</span>
       <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">Horizontal press</div><div class="reps">3 × 6–10</div></div>
+    <div class="ex" data-log="a2"><div class="ex-name">Horizontal press</div><div class="reps">3 × 6–10</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Barbell bench · DB bench (flat/incline) · weighted dip · weighted push-up</div>
     </details>
     <div class="pair">— superset —</div>
-    <div class="ex"><div class="ex-name">Horizontal pull</div><div class="reps">3 × 8–12</div></div>
+    <div class="ex" data-log="a3"><div class="ex-name">Horizontal pull</div><div class="reps">3 × 8–12</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Barbell row · single-arm DB row · chest-supported row · inverted row</div>
       <div class="swap">Finger injury: straps or open-hand grip on all rows.</div>
@@ -248,12 +274,12 @@
   <div class="ss acc">
     <div class="ss-head"><span class="ss-name">Slots 4+5 · Superset<span class="tag cut2">cut second</span></span>
       <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">Hip hinge, light</div><div class="reps">3 × 10–12</div></div>
+    <div class="ex" data-log="a4"><div class="ex-name">Hip hinge, light</div><div class="reps">3 × 10–12</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Light RDL · back extension · KB swing · hip thrust / glute bridge</div>
     </details>
     <div class="pair">— superset —</div>
-    <div class="ex"><div class="ex-name">Shoulder or arm accessory</div><div class="reps">3 × 10–15</div></div>
+    <div class="ex" data-log="a5"><div class="ex-name">Shoulder or arm accessory</div><div class="reps">3 × 10–15</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Lateral raise · face pull · curl · overhead triceps extension</div>
     </details>
@@ -283,7 +309,7 @@
   <div class="ss main">
     <div class="ss-head"><span class="ss-name">Slot 1 · Main lift<span class="tag keep">never skip</span></span>
       <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span><span class="dot">4</span></div></div>
-    <div class="ex"><div class="ex-name">Hip hinge, heavy <span class="note">straight sets · rest 2–3 min</span></div><div class="reps">4 × 4–6</div></div>
+    <div class="ex" data-log="b1"><div class="ex-name">Hip hinge, heavy <span class="note">straight sets · rest 2–3 min</span></div><div class="reps">4 × 4–6</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Deadlift · trap bar deadlift · heavy RDL · single-leg KB deadlift (then 6–8/leg)</div>
       <div class="swap">Finger injury: straps or hook grip. Fibula: pain-free ankle range — trap bar is a good default.</div>
@@ -293,12 +319,12 @@
   <div class="ss acc">
     <div class="ss-head"><span class="ss-name">Slots 2+3 · Superset</span>
       <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">Vertical press</div><div class="reps">3 × 6–10</div></div>
+    <div class="ex" data-log="b2"><div class="ex-name">Vertical press</div><div class="reps">3 × 6–10</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Overhead press · seated/standing DB press · landmine press · pike/handstand push-up</div>
     </details>
     <div class="pair">— superset —</div>
-    <div class="ex"><div class="ex-name">Vertical pull</div><div class="reps">3 × 6–10</div></div>
+    <div class="ex" data-log="b3"><div class="ex-name">Vertical pull</div><div class="reps">3 × 6–10</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Pull-up / chin-up (weighted or band-assisted) · strap-assisted variations</div>
       <div class="swap">Finger injury: band assistance reduces grip demand — no crimp-like loading.</div>
@@ -309,13 +335,13 @@
   <div class="ss acc">
     <div class="ss-head"><span class="ss-name">Slots 4+5 · Superset<span class="tag cut2">cut second</span></span>
       <div class="sets"><span class="dot">1</span><span class="dot">2</span><span class="dot">3</span></div></div>
-    <div class="ex"><div class="ex-name">Knee-dominant, light</div><div class="reps">3 × 8–12/leg</div></div>
+    <div class="ex" data-log="b4"><div class="ex-name">Knee-dominant, light</div><div class="reps">3 × 8–12/leg</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Walking lunge · reverse lunge · step-up · goblet squat · cyclist squat</div>
       <div class="swap">Knee history: reverse lunges are usually kinder than forward; step-ups substitute freely.</div>
     </details>
     <div class="pair">— superset —</div>
-    <div class="ex"><div class="ex-name">Rear delt / arm / grip accessory</div><div class="reps">3 × 10–15</div></div>
+    <div class="ex" data-log="b5"><div class="ex-name">Rear delt / arm / grip accessory</div><div class="reps">3 × 10–15</div></div>
     <details class="choices"><summary>choices</summary>
       <div class="list">Rear-delt fly · band pull-apart · hammer curl · farmer's carry (30–40 m)</div>
       <div class="swap">Finger injury: straps on carries, or skip grip work entirely.</div>
@@ -401,7 +427,8 @@
 <footer>
   <b>Scheduling</b> · alternate A and B regardless of calendar gaps — whichever you did last, do the other next. 2×/wk: AB AB · 3×/wk: ABA BAB.<br>
   <b>If pressed for time</b> · drop the finisher, then slots 4+5, then trim 2+3 to 2 sets. Slot 1 is never skipped.<br>
-  <b>Session</b> ~60 min. Tap the set boxes to track your rounds.
+  <b>Session</b> ~60 min. Tap the set boxes to track your rounds. Tap <b>log ＋</b> / <b>last · …</b> under an exercise to log your weights — entries are stored only on this device.
+  <button class="reset" onclick="copyLog(this)">Copy weight log</button>
   <button class="reset" onclick="resetAll()">Reset set tracker</button>
 </footer>
 
@@ -440,6 +467,118 @@
   });
   function resetAll(){
     document.querySelectorAll('.dot').forEach(d=>{d.classList.remove('on');d.textContent=d.dataset.n;});
+  }
+
+  /* ---- weight log ----
+     One free-text entry per exercise per day ("front squat 80 · 6,6,5"),
+     kept in localStorage — private to this device, never in the repo. */
+  const LOG_KEY='abLog.v1';
+  const LOG_NAMES={
+    a1:'A · Knee-dominant, heavy', a2:'A · Horizontal press', a3:'A · Horizontal pull',
+    a4:'A · Hip hinge, light',     a5:'A · Shoulder/arm accessory',
+    b1:'B · Hip hinge, heavy',     b2:'B · Vertical press',   b3:'B · Vertical pull',
+    b4:'B · Knee-dominant, light', b5:'B · Rear delt/arm/grip accessory'
+  };
+  function loadLog(){
+    try{ return JSON.parse(localStorage.getItem(LOG_KEY))||{}; }catch(e){ return {}; }
+  }
+  function saveLog(log){
+    try{ localStorage.setItem(LOG_KEY,JSON.stringify(log)); }catch(e){}
+  }
+  function logToday(){
+    const n=new Date();
+    return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+  }
+  function logShortDate(d){
+    const p=d.split('-');
+    return (+p[2])+'.'+(+p[1]);
+  }
+
+  document.querySelectorAll('.ex[data-log]').forEach(ex=>{
+    const id=ex.dataset.log;
+    const box=document.createElement('div');
+    box.className='log';
+    box.innerHTML=
+      '<div class="hint"></div>'+
+      '<div class="editor">'+
+        '<div class="entry"><input type="text" placeholder="e.g. front squat 80 · 6,6,5" enterkeyhint="done"><button>Save</button></div>'+
+        '<div class="hist"></div>'+
+      '</div>';
+    ex.after(box);
+    const hint=box.querySelector('.hint'), input=box.querySelector('input'),
+          btn=box.querySelector('.entry button'), hist=box.querySelector('.hist');
+
+    function render(){
+      const entries=loadLog()[id]||[];
+      const last=entries[entries.length-1];
+      if(last){
+        hint.textContent='last · ';
+        const b=document.createElement('b');
+        b.textContent=logShortDate(last.d)+' · '+last.t;
+        hint.appendChild(b);
+        input.value=last.t;
+      }else{
+        hint.textContent='log ＋';
+        input.value='';
+      }
+      hist.textContent='';
+      entries.slice(0,-1).slice(-8).reverse().forEach(e=>{
+        const row=document.createElement('div');
+        const d=document.createElement('span');
+        d.className='d'; d.textContent=logShortDate(e.d);
+        row.appendChild(d);
+        row.appendChild(document.createTextNode(e.t));
+        hist.appendChild(row);
+      });
+    }
+    function save(){
+      const t=input.value.trim();
+      if(!t) return;
+      const log=loadLog(), entries=log[id]||[], d=logToday();
+      if(entries.length&&entries[entries.length-1].d===d) entries[entries.length-1].t=t;
+      else entries.push({d:d,t:t});
+      log[id]=entries;
+      saveLog(log);
+      box.classList.remove('open');
+      render();
+    }
+    hint.addEventListener('click',()=>{
+      const open=box.classList.toggle('open');
+      if(open) input.focus();
+    });
+    btn.addEventListener('click',save);
+    input.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();save();} });
+    render();
+  });
+
+  function copyLog(btn){
+    const log=loadLog();
+    let out='';
+    Object.keys(LOG_NAMES).forEach(id=>{
+      const entries=log[id]||[];
+      if(!entries.length) return;
+      out+=LOG_NAMES[id]+'\n';
+      entries.forEach(e=>{ out+='  '+e.d+'  '+e.t+'\n'; });
+      out+='\n';
+    });
+    const flash=msg=>{
+      const old=btn.dataset.lbl||(btn.dataset.lbl=btn.textContent);
+      btn.textContent=msg;
+      setTimeout(()=>{ btn.textContent=old; },1500);
+    };
+    if(!out){ flash('Nothing logged yet'); return; }
+    const fallback=()=>{
+      const ta=document.createElement('textarea');
+      ta.value=out; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      let ok=false;
+      try{ ok=document.execCommand('copy'); }catch(e){}
+      ta.remove();
+      flash(ok?'Copied ✓':'Copy failed');
+    };
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(out).then(()=>flash('Copied ✓'),fallback);
+    }else fallback();
   }
 
   /* ---- timer ----
