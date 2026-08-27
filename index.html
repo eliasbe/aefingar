@@ -141,6 +141,16 @@
   .ss.acc .log .entry button{background:var(--blue);color:#06243a;}
   .log .hist{margin-top:7px;font-size:12px;color:var(--muted);line-height:1.65;}
   .log .hist .d{color:var(--dim);font-weight:700;margin-right:7px;font-variant-numeric:tabular-nums;}
+  .row.fin .log .hint b{color:var(--violet);}
+  .row.fin .log .entry button{background:var(--violet);color:#1b1030;}
+
+  footer textarea{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:9px;
+    color:var(--ink);font-family:"Hanken Grotesque",sans-serif;font-weight:500;font-size:16px;
+    padding:9px 11px;resize:vertical;margin-top:10px;
+  }
+  footer textarea::placeholder{color:var(--dim);}
+  footer textarea:focus{outline:none;border-color:var(--dim);}
 
   /* ---- simple rows (warmup / finisher / Z items) ---- */
   .row{display:flex;gap:11px;align-items:flex-start;background:var(--panel);
@@ -213,8 +223,6 @@
   }
   #timer button.preset.armed{background:var(--accent);border-color:var(--accent);color:#1a1204;}
   #timer button.ctl{color:var(--ink);}
-  #timer button#tMode{color:var(--violet);border-color:rgba(177,140,255,.35);}
-  #timer button#tMode.sw{background:rgba(177,140,255,.15);}
   #timer.flash{animation:tflash .5s ease 4;}
   @keyframes tflash{
     0%,100%{background:rgba(22,24,28,.96);}
@@ -286,7 +294,7 @@
     <div class="rest">rest ~60 s per round</div>
   </div>
 
-  <div class="row fin opt">
+  <div class="row fin opt" data-log="af">
     <div class="ic">F</div>
     <div class="body">
       <div class="t">Finisher · optional <span class="tag cut1">cut first</span></div>
@@ -349,7 +357,7 @@
     <div class="rest">rest ~60 s per round</div>
   </div>
 
-  <div class="row fin opt">
+  <div class="row fin opt" data-log="bf">
     <div class="ic">F</div>
     <div class="body">
       <div class="t">Finisher · optional <span class="tag cut1">cut first</span></div>
@@ -429,6 +437,11 @@
   <b>If pressed for time</b> · drop the finisher, then slots 4+5, then trim 2+3 to 2 sets. Slot 1 is never skipped.<br>
   <b>Session</b> ~60 min. Tap the set boxes to track your rounds. Tap <b>log ＋</b> / <b>last · …</b> under an exercise to log your weights — entries are stored only on this device.
   <button class="reset" onclick="copyLog(this)">Copy weight log</button>
+  <button class="reset" id="pasteToggle" onclick="togglePaste()">Paste log</button>
+  <div id="pasteBox" style="display:none;">
+    <textarea id="pasteText" rows="5" placeholder="Paste a copied weight log here"></textarea>
+    <button class="reset" onclick="importLog(this)">Import</button>
+  </div>
   <button class="reset" onclick="resetAll()">Reset set tracker</button>
 </footer>
 
@@ -441,7 +454,6 @@
       <button class="preset" onclick="tPreset(90,this)">1:30</button>
       <button class="preset" onclick="tPreset(120,this)">2:00</button>
       <button class="preset" onclick="tPreset(180,this)">3:00</button>
-      <button id="tMode" onclick="tSwitchMode()">⏱</button>
       <button class="ctl" onclick="tReset()">✕</button>
     </div>
   </div>
@@ -475,10 +487,11 @@
   const LOG_KEY='abLog.v1';
   const LOG_NAMES={
     a1:'A · Knee-dominant, heavy', a2:'A · Horizontal press', a3:'A · Horizontal pull',
-    a4:'A · Hip hinge, light',     a5:'A · Shoulder/arm accessory',
+    a4:'A · Hip hinge, light',     a5:'A · Shoulder/arm accessory', af:'A · Finisher',
     b1:'B · Hip hinge, heavy',     b2:'B · Vertical press',   b3:'B · Vertical pull',
-    b4:'B · Knee-dominant, light', b5:'B · Rear delt/arm/grip accessory'
+    b4:'B · Knee-dominant, light', b5:'B · Rear delt/arm/grip accessory', bf:'B · Finisher'
   };
+  const logRenderers=[];
   function loadLog(){
     try{ return JSON.parse(localStorage.getItem(LOG_KEY))||{}; }catch(e){ return {}; }
   }
@@ -494,17 +507,19 @@
     return (+p[2])+'.'+(+p[1]);
   }
 
-  document.querySelectorAll('.ex[data-log]').forEach(ex=>{
+  document.querySelectorAll('[data-log]').forEach(ex=>{
     const id=ex.dataset.log;
     const box=document.createElement('div');
     box.className='log';
+    const ph=id.endsWith('f')?'e.g. 6 × 20/40 bike':'e.g. front squat 80 · 6,6,5';
     box.innerHTML=
       '<div class="hint"></div>'+
       '<div class="editor">'+
-        '<div class="entry"><input type="text" placeholder="e.g. front squat 80 · 6,6,5" enterkeyhint="done"><button>Save</button></div>'+
+        '<div class="entry"><input type="text" placeholder="'+ph+'" enterkeyhint="done"><button>Save</button></div>'+
         '<div class="hist"></div>'+
       '</div>';
-    ex.after(box);
+    if(ex.classList.contains('ex')) ex.after(box);
+    else (ex.querySelector('.body')||ex).appendChild(box);
     const hint=box.querySelector('.hint'), input=box.querySelector('input'),
           btn=box.querySelector('.entry button'), hist=box.querySelector('.hist');
 
@@ -548,8 +563,15 @@
     });
     btn.addEventListener('click',save);
     input.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();save();} });
+    logRenderers.push(render);
     render();
   });
+
+  function flashBtn(btn,msg){
+    const old=btn.dataset.lbl||(btn.dataset.lbl=btn.textContent);
+    btn.textContent=msg;
+    setTimeout(()=>{ btn.textContent=old; },1500);
+  }
 
   function copyLog(btn){
     const log=loadLog();
@@ -561,12 +583,7 @@
       entries.forEach(e=>{ out+='  '+e.d+'  '+e.t+'\n'; });
       out+='\n';
     });
-    const flash=msg=>{
-      const old=btn.dataset.lbl||(btn.dataset.lbl=btn.textContent);
-      btn.textContent=msg;
-      setTimeout(()=>{ btn.textContent=old; },1500);
-    };
-    if(!out){ flash('Nothing logged yet'); return; }
+    if(!out){ flashBtn(btn,'Nothing logged yet'); return; }
     const fallback=()=>{
       const ta=document.createElement('textarea');
       ta.value=out; ta.style.position='fixed'; ta.style.opacity='0';
@@ -574,11 +591,44 @@
       let ok=false;
       try{ ok=document.execCommand('copy'); }catch(e){}
       ta.remove();
-      flash(ok?'Copied ✓':'Copy failed');
+      flashBtn(btn,ok?'Copied ✓':'Copy failed');
     };
     if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(out).then(()=>flash('Copied ✓'),fallback);
+      navigator.clipboard.writeText(out).then(()=>flashBtn(btn,'Copied ✓'),fallback);
     }else fallback();
+  }
+
+  function togglePaste(){
+    const box=document.getElementById('pasteBox');
+    box.style.display=box.style.display==='none'?'block':'none';
+  }
+  function importLog(btn){
+    const ta=document.getElementById('pasteText');
+    if(!ta.value.trim()){ flashBtn(btn,'Nothing to import'); return; }
+    const byName={};
+    Object.keys(LOG_NAMES).forEach(k=>{ byName[LOG_NAMES[k]]=k; });
+    const log=loadLog();
+    let id=null, imported=0;
+    ta.value.split('\n').forEach(line=>{
+      const entry=line.match(/^\s+(\d{4}-\d{2}-\d{2})\s+(.+)$/);
+      if(entry&&id){
+        const entries=log[id]||(log[id]=[]);
+        const hit=entries.find(e=>e.d===entry[1]);
+        if(hit) hit.t=entry[2].trim();
+        else entries.push({d:entry[1],t:entry[2].trim()});
+        imported++;
+        return;
+      }
+      const name=line.trim();
+      id=(byName[name]!==undefined)?byName[name]:null;
+    });
+    if(!imported){ flashBtn(btn,'Unrecognized format'); return; }
+    Object.keys(log).forEach(k=>log[k].sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0));
+    saveLog(log);
+    logRenderers.forEach(r=>r());
+    ta.value='';
+    document.getElementById('pasteBox').style.display='none';
+    flashBtn(document.getElementById('pasteToggle'),'Imported '+imported+' ✓');
   }
 
   /* ---- timer ----
@@ -586,8 +636,7 @@
      from Date.now() so a throttled/background tab shows the right value
      the moment you look back. Beep only fires while the page is visible. */
   const tEl=document.getElementById('tDisplay'), tLbl=document.getElementById('tLabel'),
-        tBar=document.getElementById('timer'), tModeBtn=document.getElementById('tMode');
-  let tMode='countdown';      // 'countdown' | 'stopwatch'
+        tBar=document.getElementById('timer');
   let tDur=0;                 // countdown duration, s
   let tStart=null;            // epoch ms when (re)started
   let tAcc=0;                 // accumulated ms while paused
@@ -601,15 +650,10 @@
   function elapsed(){ return (tAcc+(tRunning?Date.now()-tStart:0))/1000; }
 
   function tRender(){
-    if(tMode==='countdown'){
-      const rem=tDur-elapsed();
-      tEl.textContent=fmt(rem);
-      tEl.classList.toggle('over',rem<0);
-      if(rem<=0&&!tFired&&tDur>0){tFired=true;tDing();}
-    }else{
-      tEl.textContent=fmt(elapsed());
-      tEl.classList.remove('over');
-    }
+    const rem=tDur-elapsed();
+    tEl.textContent=fmt(rem);
+    tEl.classList.toggle('over',rem<0);
+    if(rem<=0&&!tFired&&tDur>0){tFired=true;tDing();}
   }
   function tTick(){ if(tRunning) tRender(); }
 
@@ -620,7 +664,6 @@
   }
   function tPreset(sec,btn){
     unlockAudio();
-    tMode='countdown'; tModeBtn.classList.remove('sw');
     tDur=sec; tAcc=0; tFired=false;
     tLbl.textContent='rest timer';
     document.querySelectorAll('#timer .preset').forEach(b=>b.classList.toggle('armed',b===btn));
@@ -629,22 +672,12 @@
   function tToggle(){
     unlockAudio();
     if(tRunning){ tAcc+=Date.now()-tStart; tRunning=false; tLbl.textContent='paused'; tRender(); }
-    else if(tAcc>0||tDur>0||tMode==='stopwatch'){ tLbl.textContent=tMode==='stopwatch'?'stopwatch':'rest timer'; tRun(); }
-  }
-  function tSwitchMode(){
-    unlockAudio();
-    tMode=(tMode==='countdown')?'stopwatch':'countdown';
-    tModeBtn.classList.toggle('sw',tMode==='stopwatch');
-    tDur=0; tAcc=0; tFired=false; tRunning=false;
-    document.querySelectorAll('#timer .preset').forEach(b=>b.classList.remove('armed'));
-    tLbl.textContent=tMode==='stopwatch'?'stopwatch · tap time to start':'rest timer';
-    tEl.classList.remove('over');
-    tEl.textContent='0:00';
+    else if(tAcc>0||tDur>0){ tLbl.textContent='rest timer'; tRun(); }
   }
   function tReset(){
     tDur=0; tAcc=0; tFired=false; tRunning=false;
     document.querySelectorAll('#timer .preset').forEach(b=>b.classList.remove('armed'));
-    tLbl.textContent=tMode==='stopwatch'?'stopwatch · tap time to start':'rest timer';
+    tLbl.textContent='rest timer';
     tEl.classList.remove('over');
     tEl.textContent='0:00';
   }
